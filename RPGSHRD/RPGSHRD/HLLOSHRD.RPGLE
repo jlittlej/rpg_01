@@ -18,7 +18,7 @@ dcl-s age packed(5);
 
 dcl-ds info qualified;
   name char(10) inz('Sam');
-  salary packed(9 : 2) inz(50000.33);
+  salary packed(9 : 2) inz(44000.14);
 end-ds;
 
 
