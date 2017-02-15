@@ -1,0 +1,143 @@
+
+/*------------------------------------------------------------------*/
+/*                                                                  */
+/*  FILE ID     : ADDRERCHK1     DATE       : OCT.05 2005           */
+/*                                                                  */
+/*  PROGRAMMER  : Robin Gong             ORIGIN     : NEW           */
+/*                                       SELF CHECK : YES           */
+/*                                                                  */
+/*  LIBRARY     : ECLIPSTEST             PRODUCT    : ECLIPSE       */
+/*                                                                  */
+/*  OBJECTIVE   : VARIOUS CL COMMANDS TO TEST %ADDR BUILTIN         */
+/*  FUNCTION.                                                       */
+/*                                                                  */
+/*                                                                  */
+/*------------------------------------------------------------------*/
+/*PROLOG END                                                        */
+/*------------------------------------------------------------------*/
+/* MODIFICATION LOG                                                 */
+/* MOD# PROGRAMMER           DATE     REASON                        */
+/* ---- -------------------- -------- ------------------------------*/
+/* $00  ROBIN GONG           10/05/05 CREATE                        */
+/* $01  FIRST LAST           MM/DD/YY WHATEVER YOU CHANGED IT       */
+/*                                    FOR - GIVE AS GOOD AN         */
+/*                                    EXPLANATION AS IS REQUIRED    */
+/*                                                                  */
+/*                                                                  */
+/*------------------------------------------------------------------*/
+
+/* %ADDR BIF */
+
+/* CPD0105 */
+             DCL        VAR(%ADDRE(&A)) TYPE(*DEC)
+
+/* CPD0105 */
+             DCL        VAR(%ADDRE(A)) TYPE(*DEC)
+
+/* CPD0105 */
+             DCL        VAR(%ADDRE(&&)) TYPE(*DEC)
+
+/* CPD0105 */
+             DCL        VAR(%ADDRE(+)) TYPE(*DEC)
+
+/* CPD0105 */
+             DCL        VAR(%ADDRE(%)) TYPE(*DEC)
+
+/* CPD0059 */
+             CHGVAR     VAR(%ADDR(A)) VALUE(&TEST)
+
+/* CPD0181 */
+             CHGVAR     VAR(%ADDR(&&)) VALUE(&TEST)
+
+/* CPD0018 */
+             CHGVAR     VAR(%ADDR([)) VALUE(&TEST)
+
+/* CPD0057 */
+             CHGVAR     VAR(&A) VALUE(%ADDR())
+
+/* CPD0058 */
+             CHGVAR     VAR(&A) VALUE(%ADDR(1 2 3 4))
+
+/* CPD0059 */
+             CHGVAR     VAR(&A) VALUE(%ADDR(5))
+
+/* OK - no error */
+             CHGVAR     VAR(&A) VALUE(%ADDR(&A234567890))
+
+/* CPD00181 */
+             CHGVAR     VAR(&A) VALUE(%ADDR((&A)))
+
+/* CPD0054 */
+             CHGVAR     VAR(&A) VALUE(%ADDR(&A1234567901))
+
+/* CPD0054 */
+             CHGVAR     VAR(&A) VALUE(%ADDR(&A12345678902345678901))
+
+/* CPD0106 */
+             CHGVAR     VAR(&A) VALUE(%ADDR(&A123456790123456789012))
+
+/* CPD00181 */
+             CHGVAR     VAR(&A) VALUE(%ADDR(&1234567890))
+
+/* CPD00181 */
+             CHGVAR     VAR(&A) VALUE(%ADDR(&_%#@!))
+
+/* OK - no error */
+             CHGVAR     VAR(&A) VALUE(%ADDR(&A) + 10)
+
+/* OK - no error */
+             CHGVAR     VAR(&A) VALUE(((%ADDR(&A) + 10)))
+
+/* OK - no error */
+             CHGVAR     VAR(&A) VALUE(- %ADDR(&A) + 10)
+
+/* OK - no error */
+             CHGVAR     VAR(&A) VALUE(+ %ADDR(&A) + 10)
+
+/* CPD00120 */
+             CHGVAR     VAR(&A) VALUE(* %ADDR(&A) + 10)
+
+/* CPD00120 */
+             CHGVAR     VAR(&A) VALUE(/ %ADDR(&A) + 10)
+
+/* OK - no error */
+             CHGVAR     VAR(&A) VALUE(%ADDR(&A) + 10)
+
+/* OK - no error */
+             CHGVAR     VAR(&A) VALUE(%ADDR(&A) *CAT 'BBB')
+
+/* OK - no error */
+             IF         COND(%ADDR(&A) > P) THEN(DSPLIBL)
+
+/* OK - no error */
+             IF         COND(%ADDR(&A) > 5) THEN(DSPLIBL)
+
+/* CPD0130 */
+             CHGVAR     VAR(&A) VALUE(%ADDR(&A) + A)
+
+/* OK - no error */
+             CHGVAR     VAR(&A) VALUE(*NOT %ADDR(&A))
+
+/* CPD0059 */
+CHGVAR     VAR(&A) VALUE(%ADDR(a))
+
+/* CPD0181 */
+CHGVAR     VAR(&A) VALUE(%ADDR((&a)))
+
+/* CPD0058 */
+CHGVAR     VAR(&A) VALUE(%ADDR(&a + 2))
+
+/* CPD0059 */
+CHGVAR     VAR(&A) VALUE(%ADDR(*TEST))
+
+/* OK - no error */
+CHGVAR     %ADDR(&A) VALUE(%ADDR(&B))
+
+/* CPD0181 */
+CHGVAR     %ADDR(&A + %OFS(&B)) VALUE(%ADDR(&b))
+
+/* OK - no error */
+CHGVAR     %ADDR(&A) VALUE(%OFS(&B))
+
+/* CPD0181 */
+CHGVAR     %ADDR(&A) VALUE(%ADDR(%ADDR(&C))) 
