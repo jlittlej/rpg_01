@@ -1,0 +1,20 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID.      CBLLE1.
+       ENVIRONMENT DIVISION.
+       CONFIGURATION SECTION.
+       SOURCE-COMPUTER. AS400.
+       OBJECT-COMPUTER. AS400.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01  X                           PIC 9(4) COMP.
+       01  Y                           PIC 9(4) COMP.
+       01  Z                           PIC 9(8) COMP-4.
+       PROCEDURE DIVISION.
+        MAIN-PARA.
+           MOVE 204 TO X.
+           MOVE 50 TO Y.
+           COMPUTE Z = X * Y.
+           DISPLAY Z.
+           GOBACK.
