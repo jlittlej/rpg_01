@@ -1,0 +1,149 @@
+
+       IDENTIFICATION DIVISION.
+        PROGRAM-ID. DEMOSQL.
+      *
+      /d d d dkdkdkds
+  1
+   3   ENVIRONMENT DIVISION.
+      *
+       COPY DEMOENV.
+      *
+       DATA DIVISION.
+      *
+        WORKING-STORAGE SECTION.
+      *
+      * Record formats for receiving SQL data.
+       01  Income-fields.
+           05  Income-employee         pic x(9).
+           05  Period-income           pic s9(7)v99    packed-decimal.
+           05  Period-income-ind       pic s9999       binary.
+           05  YTD-income              pic s9(7)v99    packed-decimal.
+           05  YTD-income-ind          pic s9999       binary.
+       01  Income-select-fields        redefines Income-fields.
+           05  filler                  pic x(9).
+           05  Period-income-sel       pic s9(7)v99    packed-decimal.
+           05  Period-income-ind-sel   pic s9999       binary.
+           05  YTD-income-sel          pic s9(7)v99    packed-decimal.
+           05  YTD-income-ind-sel      pic s9999       binary.
+
+       01  Deferral-fields.
+           05  Deferral-employee       pic x(9).
+           05  Employee-amount         pic s9(7)v99    packed-decimal.
+           05  Employee-amount-ind     pic s9999       binary.
+           05  Employer-amount         pic s9(7)v99    packed-decimal.
+           05  Employer-amount-ind     pic s9999       binary.
+       01  Deferral-select-fields      redefines Deferral-fields.
+           05  filler                  pic x(9).
+           05  Employee-amount-sel     pic s9(7)v99    packed-decimal.
+           05  Employee-amount-ind-sel pic s9999       binary.
+           05  Employer-amount-sel     pic s9(7)v99    packed-decimal.
+           05  Employer-amount-ind-sel pic s9999       binary.
+
+       01  Indicator-area.
+           05  File-indicators.
+               10  Basic-eof           pic 9.
+                   88  Eof-basic                       value 0.
+                   88  Not-eof-basic                   value 1.
+               10  Payroll-vld         pic 9.
+                   88  Valid-payroll                   value 0.
+                   88  Invalid-payroll                 value 1.
+               10  Deferral-flags      pic 9.
+                   88  Have-deferrals                  value 0.
+                   88  No-deferrals                    value 1.
+               10  Income-flags        pic 9.
+                   88  Have-income                     value 0.
+                   88  No-income                       value 1.
+           05  Logic-indicators.
+               10  Eligibility         pic 9.
+                   88  Not-eligible                    value 0.
+                   88  Eligible                        value 1.
+               10  Inclusion-flag      pic 9.
+                   88  Do-not-include                  value 0.
+                   88  Include                         value 1.
+               10  Page-full-ind       pic 9.
+                   88  Page-not-full                   value 0.
+                   88  Page-full                       value 1.
+           05  Print-indicators.
+               10  Print-termintaed    pic 1           indic 51.
+                   88  Print-terminated-off            value b'0'.
+                   88  Print-terminated-on             value b'1'.
+
+      *
+      * Infinium date parameters structure (DPARMS)
+           exec sql
+               include sqlca1
+           end-exec.
+               auto-skip
+               auto
+               attribute
+               areas
+               code-set
+               comp-1
+               compute
+               computational-1
+               control-area
+               controls
+               day-of-week
+               date-compiled
+               empty-check
+               file-control
+               indexed
+               index-1
+               indicate
+               left-justify
+               limits
+               linage-counter
+               low-values
+               picoseconds
+               space-fill
+               spaces
+               space
+               zeros
+               zero-fill
+
+      *
+      *   Working fields
+      *
+       01  Work-fields.
+           05  Check-date              pic x(10).
+           05  Check-date-hyf          pic s9(6).
+           05  Year-start-hyf          pic s9(6).
+           05  Work-employee           pic x(9).
+           05  AmtInd                  pic s9999       binary.
+           05  Work-exemptions         pic xx.
+      *
+      actgrp
+
+       PROCEDURE DIVISION.
+        MAIN-LINE SECTION.
+      *-------------------------------------------------------------****
+      * TODO Use SQL to access NULL capable data items.                  ****
+      *-------------------------------------------------------------****
+      *
+      / TODO asdfadsf
+       1200-Get-compensation.
+           display "Processing Get-compensation".
+           exec sql
+               select   a.ilen
+                       ,sum(a.ilamt)
+                       ,sum((select sum(b.ilamt)
+                           from pypil b
+                           where b.ilen=a.ilen and b.iler=a.iler
+                                   and b.ilcdh>=:Year-start-hyf
+                                   and b.ilcdh<=:Check-date-hyf
+                                   and b.iltype='COMP'))
+                   intox :Income-employeex
+                       ,:Period-income-sel
+                           :Period-income-ind-sel
+                       ,:YTD-income-sel
+                           :YTD-income-ind-sel
+                   from  pypil a
+                   where a.iler = 'WAY'
+                           and a.ilen  %=  :Work-employee
+                           and a.iltype=   'COMP'
+                           and a.ilcdh =   :Check-date-hyf
+                   group  by a.ilen
+           end-exec.
+
+         SUB-VARIATION-999.
+           EXIT.
